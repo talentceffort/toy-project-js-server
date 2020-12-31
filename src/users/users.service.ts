@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entity/users.interface';
 
 @Injectable()
@@ -9,16 +10,16 @@ export class UsersService {
     return this.users;
   }
 
-  getUserById(userId: string): User {
-    return this.users.find((user) => user.id === parseInt(userId, 10));
+  getUserById(userId: number): User {
+    return this.users.find((user) => user.id === userId);
   }
 
-  deleteByUserId(userId: string): boolean {
-    this.users = this.users.filter((user) => user.id !== parseInt(userId, 10));
+  deleteByUserId(userId: number): boolean {
+    this.users = this.users.filter((user) => user.id !== userId);
     return true;
   }
 
-  createUser(userInfo) {
+  createUser(userInfo: CreateUserDto) {
     const newUser = {
       id: this.users.length + 1,
       ...userInfo,
