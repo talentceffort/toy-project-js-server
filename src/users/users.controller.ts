@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
@@ -17,15 +17,14 @@ export class UsersController {
     return this.usersService.getUserById(userId);
   }
 
-  @Delete(':id')
-  deleteByUserId(@Param('id') userId: number) {
-    return this.usersService.deleteByUserId(userId);
-  }
+  // @Delete(':id')
+  // deleteByUserId(@Param('id') userId: number) {
+  //   return this.usersService.deleteByUserId(userId);
+  // }
 
   @Post()
   createUser(@Body() userInfo: CreateUserDto) {
     console.log('userInfo :', userInfo);
-    // JSON 형태로 return 해줌. 편하다!
     return this.usersService.createUser(userInfo);
   }
 }

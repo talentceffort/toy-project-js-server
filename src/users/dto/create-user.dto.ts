@@ -1,12 +1,9 @@
-import { IsString } from 'class-validator';
+import { OmitType } from '@nestjs/mapped-types';
+import { User } from '../entity/users.entity';
 
-export class CreateUserDto {
-  @IsString()
-  name: string;
-
-  @IsString()
-  address: string;
-
-  @IsString({ each: true })
-  hobbies: string[];
-}
+export class CreateUserDto extends OmitType(User, [
+  'id',
+  'status',
+  'createdAt',
+  'updatedAt',
+]) {}

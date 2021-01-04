@@ -1,30 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './entity/users.interface';
+import { User } from './entity/users.entity';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  constructor(
+    @InjectRepository(User)
+    private readonly users: Repository<User>,
+  ) {}
 
-  getAllUser(): User[] {
-    return this.users;
+  getAllUser(): Promise<User[]> {
+    return this.users.find();
   }
 
-  getUserById(userId: number): User {
-    return this.users.find((user) => user.id === userId);
+  getUserById(userId: number): Promise<User> {
+    return this.users.findOne(userId);
   }
 
-  deleteByUserId(userId: number): boolean {
-    this.users = this.users.filter((user) => user.id !== userId);
-    return true;
-  }
+  // deleteByUserId(userId: number) {
+  // }
 
   createUser(userInfo: CreateUserDto) {
-    const newUser = {
-      id: this.users.length + 1,
-      ...userInfo,
-    };
-    this.users = [...this.users, newUser];
-    return '새로운 유저 생성!';
+    try {
+      const newUserInfo = { ...userInfo, createdAt: new Date() };
+      const newUser = this.users.create(newUserInfo);
+      return this.users.save(newUser);
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
