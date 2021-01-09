@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import databaseConfig from 'config/database.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entity/users.entity';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig],
+      isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'dev' && '.env.dev',
     }),
     TypeOrmModule.forRoot({
@@ -23,6 +23,7 @@ import { UsersModule } from './users/users.module';
       entities: [User],
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [], // router 같은 존재
   providers: [],

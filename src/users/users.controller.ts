@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { CreateUserDto, LoginInput } from './dto/user.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -13,18 +14,18 @@ export class UsersController {
 
   @Get(':id')
   getUserById(@Param('id') userId: number) {
-    console.log(typeof userId);
+    // console.log(typeof userId);
     return this.usersService.getUserById(userId);
   }
 
-  // @Delete(':id')
-  // deleteByUserId(@Param('id') userId: number) {
-  //   return this.usersService.deleteByUserId(userId);
-  // }
-
   @Post()
   createUser(@Body() userInfo: CreateUserDto) {
-    console.log('userInfo :', userInfo);
     return this.usersService.createUser(userInfo);
+  }
+
+  @Post('me')
+  @UseGuards(AuthGuard)
+  me() {
+    return 'hi';
   }
 }

@@ -1,34 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, LoginInput } from './dto/user.dto';
 import { User } from './entity/users.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly users: Repository<User>,
+    private readonly users: Repository<User>, // private readonly config: ConfigService, // config 를 사용하기 위해 module 에 import 해주기. 근데 글로벌이라서 안해줘도 됨.
   ) {}
 
   getAllUser(): Promise<User[]> {
     return this.users.find();
   }
 
-  getUserById(userId: number): Promise<User> {
-    return this.users.findOne(userId);
+  getUserById(id: number): Promise<User> {
+    return this.users.findOne(id);
   }
 
-  // deleteByUserId(userId: number) {
-  // }
+  getUserBydUserId(userId: string): Promise<User> {
+    return this.users.findOne({ userId });
+  }
 
-  createUser(userInfo: CreateUserDto) {
+  async createUser(
+    userInfo: CreateUserDto,
+  ): Promise<{ ok: boolean; error?: string }> {
     try {
-      const newUserInfo = { ...userInfo, createdAt: new Date() };
-      const newUser = this.users.create(newUserInfo);
-      return this.users.save(newUser);
+      const { userId } = userInfo;
+      const exsist = await this.users.findOne({ userId });
+
+      if (exsist) {
+        return { ok: false, error: '이미 존재하는 id 입니다' };
+      }
+      await this.users.save(this.users.create(userInfo));
+      return { ok: true };
     } catch (e) {
-      console.error(e);
+      return { ok: false, error: 'id 생성 실패' };
     }
   }
 }

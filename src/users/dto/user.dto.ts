@@ -1,4 +1,4 @@
-import { OmitType } from '@nestjs/mapped-types';
+import { OmitType, PickType } from '@nestjs/mapped-types';
 import { User } from '../entity/users.entity';
 
 export class CreateUserDto extends OmitType(User, [
@@ -7,3 +7,5 @@ export class CreateUserDto extends OmitType(User, [
   'createdAt',
   'updatedAt',
 ]) {}
+
+export class LoginInput extends PickType(User, ['userId', 'password']) {}
