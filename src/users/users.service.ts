@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto, LoginInput } from './dto/user.dto';
+import { CreateOAuthDto, CreateUserDto } from './dto/user.dto';
 import { User } from './entity/users.entity';
 
 @Injectable()
@@ -19,16 +19,16 @@ export class UsersService {
     return this.users.findOne(id);
   }
 
-  getUserBydUserId(userId: string): Promise<User> {
-    return this.users.findOne({ userId });
+  getUserBydUserId(login_id: string): Promise<User> {
+    return this.users.findOne({ login_id });
   }
 
   async createUser(
-    userInfo: CreateUserDto,
+    userInfo: CreateUserDto | CreateOAuthDto,
   ): Promise<{ ok: boolean; error?: string }> {
     try {
-      const { userId } = userInfo;
-      const exsist = await this.users.findOne({ userId });
+      const { login_id } = userInfo;
+      const exsist = await this.users.findOne({ login_id });
 
       if (exsist) {
         return { ok: false, error: '이미 존재하는 id 입니다' };

@@ -1,17 +1,30 @@
-import { IsBoolean, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { CoreEntity } from 'src/common/entities/core.entity';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity, IsNull } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
+
+export enum SignUpType {
+  Local = 'local',
+  Google = 'google',
+}
+
 @Entity() // Type ORM에서 사용 가능.
 export class User extends CoreEntity {
   @Column()
   @IsString()
   @MinLength(4)
   @MaxLength(20)
-  userId: string;
+  login_id: string;
 
-  @Column()
+  @Column({ nullable: true })
   @MinLength(8)
   @MaxLength(16)
   password: string;
@@ -20,13 +33,13 @@ export class User extends CoreEntity {
   @IsString()
   @MinLength(1)
   @MaxLength(20)
-  firstName: string;
+  first_name: string;
 
   @Column()
   @IsString()
   @MinLength(1)
   @MaxLength(20)
-  lastName: string;
+  last_name: string;
 
   @Column({
     default: true,
@@ -34,10 +47,23 @@ export class User extends CoreEntity {
   @IsBoolean()
   status: boolean;
 
+  @Column({
+    type: 'enum',
+    enum: SignUpType,
+  })
+  @IsEnum(SignUpType)
+  signup_type: SignUpType;
+
+  @Column({ nullable: true })
+  @IsOptional()
+  last_login: Date;
+
   @BeforeInsert()
   async hashPassword(): Promise<void> {
     try {
-      this.password = await bcrypt.hash(this.password, 10);
+      if (this.signup_type === 'local') {
+        this.password = await bcrypt.hash(this.password, 10);
+      }
     } catch (e) {
       console.error(e);
       throw new InternalServerErrorException();

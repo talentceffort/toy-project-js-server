@@ -15,11 +15,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // For the jwt-strategy, Passport first verifies the JWT's signature and decodes the JSON.
   // It then invokes our validate() method passing the decoded JSON as its single parameter
-
-  async validate({ userId }: { userId: number }) {
+  async validate({ id }: { id: number }) {
     // business logic into the process.
     // For example, we could do a database lookup in our validate() method to extract more information about the user,
     // resulting in a more enriched user object being available in our Request
-    return { userId };
+    return { id };
   }
 }

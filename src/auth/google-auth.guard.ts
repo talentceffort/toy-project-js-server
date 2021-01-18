@@ -3,8 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class GoogleAuthGuard extends AuthGuard('google') {
-  handleRequest(err, user, info, context) {
-    console.log('googleUser', user);
+  handleRequest(_err, user, _info, _context) {
     return user;
   }
 }

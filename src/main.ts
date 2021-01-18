@@ -12,6 +12,9 @@ async function bootstrap() {
       transform: true, // param 을 내가 원하는 타입으로 변경해줌.
     }),
   );
-  await app.listen(3000);
+  app.enableCors({
+    origin: 'http://localhost:3000',
+  });
+  await app.listen(8080);
 }
 bootstrap();
