@@ -30,12 +30,13 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleRedirect(@Res() res: Response) {
-    return res.redirect('http://localhost:3000');
+  async googleRedirect(@Req() req: Request, @Res() res: Response) {
+    console.log(req.user);
+    res.redirect('http://localhost:3000');
   }
 
-  @Post('google/login/success')
-  @UseGuards(JwtAuthGuard)
+  @Get('google/login/success')
+  @UseGuards(GoogleAuthGuard)
   async googleLoginSuccess(@Req() req, @Res() res, @User() user) {
     console.log('login/success/', req.user);
     console.log(user);

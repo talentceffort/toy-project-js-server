@@ -6,10 +6,10 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { CoreEntity } from 'src/common/entities/core.entity';
-import { BeforeInsert, Column, Entity, IsNull } from 'typeorm';
+import { BeforeInsert, Column, Entity } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
+import { CoreEntity } from 'src/common/entities/core.entity';
 
 export enum SignUpType {
   Local = 'local',

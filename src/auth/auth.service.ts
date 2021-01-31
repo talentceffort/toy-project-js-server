@@ -20,10 +20,7 @@ export class AuthService {
     login_id,
     password,
   }: LoginInput): Promise<LoginOutput | null> {
-    console.log(login_id, password);
     const user = await this.usersService.getUserBydUserId(login_id);
-    console.log('validateUser!!!!');
-    console.log(user);
     if (user) {
       const compare = await bcrypt.compare(password, user.password);
       if (compare) {
