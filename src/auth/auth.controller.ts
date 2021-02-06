@@ -1,8 +1,7 @@
-import { Controller, Post, UseGuards, Get, Req, Res } from '@nestjs/common';
+import { Controller, Post, UseGuards, Get, Req, Body } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { User } from './get-user.decorator';
-import { GoogleAuthGuard } from './google-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 
@@ -16,32 +15,27 @@ export class AuthController {
     return this.authService.localLogin(req.user);
   }
 
+  @Post('google/login')
+  async googleLogin(@Body() data: Record<'token', string>) {
+    return this.authService.googleLogin(data.token);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Req() req: Request) {
     return req.user;
   }
 
-  @UseGuards(GoogleAuthGuard)
-  @Get('google')
-  async googleLogin() {
-    return null;
-  }
+  // @UseGuards(GoogleAuthGuard)
+  // @Get('google')
+  // async googleLogin() {
+  //   return null;
+  // }
 
-  @Get('google/callback')
-  @UseGuards(GoogleAuthGuard)
-  async googleRedirect(@Req() req: Request, @Res() res: Response) {
-    console.log(req.user);
-    res.redirect('http://localhost:3000');
-  }
-
-  @Get('google/login/success')
-  @UseGuards(GoogleAuthGuard)
-  async googleLoginSuccess(@Req() req, @Res() res, @User() user) {
-    console.log('login/success/', req.user);
-    console.log(user);
-    if (req.user) {
-      return res.user;
-    }
-  }
+  // @Get('google/callback')
+  // @UseGuards(GoogleAuthGuard)
+  // async googleRedirect(@Req() req, @Res() res: Response) {
+  //   const { access_token } = req.user;
+  //   res.redirect(`http://localhost:3000/token/access_token?=${access_token}`);
+  // }
 }

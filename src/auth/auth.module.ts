@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport/dist/passport.module';
@@ -23,6 +23,7 @@ import { LocalStrategy } from './local.strategy';
     }),
     UsersModule,
     PassportModule,
+    HttpModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, GoogleStrategy, LocalStrategy, JwtStrategy],

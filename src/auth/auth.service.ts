@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import {
@@ -14,6 +14,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private httpService: HttpService,
   ) {}
 
   async validateUser({
@@ -32,7 +33,6 @@ export class AuthService {
   }
 
   async localLogin(user: LoginOutput) {
-    console.log('lcaoLogin', user);
     return {
       access_token: this.jwtService.sign({ id: user.id }),
       user,
@@ -58,5 +58,28 @@ export class AuthService {
       access_token: this.jwtService.sign({ id: newUser.id }),
       user: newUser,
     };
+  }
+
+  async googleLogin(access_token: string) {
+    try {
+      const { data } = await this.httpService
+        .get(`https://oauth2.googleapis.com/tokeninfo?id_token=${access_token}`)
+        .toPromise();
+
+      const { email, given_name, family_name } = data;
+
+      const loginObj: googleLoginInput = {
+        login_id: email,
+        last_name: family_name,
+        first_name: given_name,
+      };
+
+      return await this.findUserFromGoogle(loginObj);
+    } catch (e) {
+      return {
+        ok: false,
+        error: e,
+      };
+    }
   }
 }

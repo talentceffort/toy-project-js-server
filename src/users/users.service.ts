@@ -20,7 +20,11 @@ export class UsersService {
   }
 
   getUserBydUserId(login_id: string): Promise<User> {
-    return this.users.findOne({ login_id });
+    return this.users
+      .createQueryBuilder('user')
+      .select('user.id')
+      .where('user.login_id = :login_id', { login_id })
+      .getOne();
   }
 
   async createUser(
