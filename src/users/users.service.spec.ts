@@ -4,15 +4,18 @@ import { Repository } from 'typeorm';
 import { SignUpType, User } from './entity/users.entity';
 import { UsersService } from './users.service';
 
-const mockRepository = () => ({
+const mockRepository = jest.fn(() => ({
   findOne: jest.fn(),
   save: jest.fn(),
   create: jest.fn(),
   findOneOrFail: jest.fn(),
   delete: jest.fn(),
-});
+  createQueryBuilder: jest.fn(),
+}));
 
-type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+export type MockRepository<T = any> = Partial<
+  Record<keyof Repository<T>, jest.Mock>
+>;
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -45,7 +48,7 @@ describe('UsersService', () => {
       signup_type: SignUpType['Local'],
     };
 
-    it('존재하는 id 생성 불가.', async () => {
+    it('id 가 이미 존재하는 경우일 때.', async () => {
       usersRepository.findOne.mockResolvedValue({
         id: 1,
         login_id: '',
@@ -61,20 +64,59 @@ describe('UsersService', () => {
       });
     });
 
-    it('id 생성', async () => {
-      usersRepository.findOne.mockResolvedValue({
-        id: 1,
-        login_id: '',
-        first_name: '',
-        last_name: '',
-        signup_type: SignUpType['Local'],
-      });
+    it('중복되는 id가 없을 때 올바르게 유저가 생성되는지?', async () => {
+      jest.spyOn(usersRepository, 'findOne').mockResolvedValue(undefined);
 
       const result = await service.createUser(createAccountArgs);
       expect(result).toMatchObject({
-        ok: false,
-        error: '이미 존재하는 id 입니다',
+        ok: true,
       });
+    });
+  });
+
+  describe('유저 조회', () => {
+    const userInfo = {
+      id: 1,
+      login_id: 'test@gmail.com',
+      first_name: 'a',
+      last_name: 'b',
+      signup_type: SignUpType['Local'],
+    };
+
+    it('유저가 회원 가입한 id 또는 email 로 유저 조회 성공', async () => {
+      const createQueryBuilder = {
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockReturnValueOnce({
+          id: 1,
+          login_id: 'test@gmail.com',
+          first_name: 'a',
+          last_name: 'b',
+          signup_type: SignUpType['Local'],
+        }),
+      };
+
+      jest
+        .spyOn(usersRepository, 'createQueryBuilder')
+        .mockImplementation(() => createQueryBuilder);
+
+      const result = await service.getUserBydUserId('test@gmail.com');
+
+      expect(result).toMatchObject(userInfo);
+    });
+
+    it('유저가 회원 가입한 id 또는 email 로 유저 정보 조회 실패', async () => {
+      const createQueryBuilder = {
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockReturnValueOnce(undefined),
+      };
+
+      jest
+        .spyOn(usersRepository, 'createQueryBuilder')
+        .mockImplementation(() => createQueryBuilder);
+
+      const result = await service.getUserBydUserId('test2@gmail.com');
+
+      expect(result).toBe(undefined);
     });
   });
 });

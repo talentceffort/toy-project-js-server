@@ -78,7 +78,7 @@ export class AuthService {
     } catch (e) {
       return {
         ok: false,
-        error: e,
+        error: 'google login 실패',
       };
     }
   }

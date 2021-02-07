@@ -19,12 +19,17 @@ export class UsersService {
     return this.users.findOne(id);
   }
 
-  getUserBydUserId(login_id: string): Promise<User> {
-    return this.users
+  async getUserBydUserId(login_id: string): Promise<User> {
+    const user = await this.users
       .createQueryBuilder('user')
-      .select('user.id')
       .where('user.login_id = :login_id', { login_id })
       .getOne();
+
+    if (!user) {
+      return undefined;
+    }
+
+    return user;
   }
 
   async createUser(
