@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { SignUpType, User } from './entity/users.entity';
+import { MockRepository } from 'src/common/common-type';
+import { SignUpType, User } from './entities/users.entity';
 import { UsersService } from './users.service';
 
 const mockRepository = jest.fn(() => ({
@@ -12,10 +12,6 @@ const mockRepository = jest.fn(() => ({
   delete: jest.fn(),
   createQueryBuilder: jest.fn(),
 }));
-
-export type MockRepository<T = any> = Partial<
-  Record<keyof Repository<T>, jest.Mock>
->;
 
 describe('UsersService', () => {
   let service: UsersService;

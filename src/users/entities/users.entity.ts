@@ -6,10 +6,11 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
 import { CoreEntity } from 'src/common/entities/core.entity';
+import { Post } from 'src/posts/entities/post.entity';
 
 export enum SignUpType {
   Local = 'local',
@@ -57,6 +58,9 @@ export class User extends CoreEntity {
   @Column({ nullable: true })
   @IsOptional()
   last_login: Date;
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts?: Post[];
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {

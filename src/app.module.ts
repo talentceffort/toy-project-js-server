@@ -1,10 +1,13 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entity/users.entity';
+import { User } from './users/entities/users.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { PostsModule } from './posts/posts.module';
 import * as morgan from 'morgan';
+import { Post } from './posts/entities/post.entity';
+import { LogsModule } from './logs/logs.module';
 
 @Module({
   imports: [
@@ -21,10 +24,12 @@ import * as morgan from 'morgan';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [User],
+      entities: [User, Post],
     }),
     UsersModule,
     AuthModule,
+    PostsModule,
+    LogsModule,
   ],
   controllers: [], // router 같은 존재
   providers: [],

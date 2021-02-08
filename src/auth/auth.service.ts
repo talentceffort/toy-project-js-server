@@ -7,7 +7,7 @@ import {
   LoginOutput,
 } from 'src/users/dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { SignUpType } from 'src/users/entity/users.entity';
+import { SignUpType } from 'src/users/entities/users.entity';
 
 @Injectable()
 export class AuthService {

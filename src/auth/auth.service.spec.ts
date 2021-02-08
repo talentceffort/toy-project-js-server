@@ -2,9 +2,9 @@ import { HttpService } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TestingModule, Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from 'src/users/entity/users.entity';
+import { MockRepository } from 'src/common/common-type';
+import { User } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/users.service';
-import { MockRepository } from 'src/users/users.service.spec';
 import { AuthService } from './auth.service';
 
 const mockRepository = jest.fn(() => ({
