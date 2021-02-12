@@ -2,6 +2,9 @@ import { HttpModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport/dist/passport.module';
+import { AppModule } from 'src/app.module';
+import { AppLogger } from 'src/logs/logger.service';
+import { LogsModule } from 'src/logs/logs.module';
 import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -24,6 +27,7 @@ import { LocalStrategy } from './local.strategy';
     UsersModule,
     PassportModule,
     HttpModule,
+    LogsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, GoogleStrategy, LocalStrategy, JwtStrategy],

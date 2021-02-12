@@ -5,9 +5,9 @@ import { User } from './users/entities/users.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
-import * as morgan from 'morgan';
 import { Post } from './posts/entities/post.entity';
 import { LogsModule } from './logs/logs.module';
+import { AppLoggerMiddleware } from './middleware/httplogging';
 
 @Module({
   imports: [
@@ -35,7 +35,7 @@ import { LogsModule } from './logs/logs.module';
   providers: [],
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(morgan('combined')).forRoutes('*');
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AppLoggerMiddleware).forRoutes('*');
   }
 }
