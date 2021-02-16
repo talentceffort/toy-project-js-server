@@ -3,7 +3,6 @@ import * as winston from 'winston';
 
 @Injectable()
 export class AppLogger implements LoggerService {
-  private readonly options: winston.LoggerOptions;
   private logger: winston.Logger;
 
   constructor() {
@@ -16,7 +15,7 @@ export class AppLogger implements LoggerService {
           return `[${msg.timestamp}][${msg.level}] - ${msg.message}`;
         }),
       ),
-      transports: [new winston.transports.Console({ level: 'debug' })],
+      transports: [new winston.transports.Console()],
     });
   }
 

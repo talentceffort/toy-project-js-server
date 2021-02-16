@@ -8,6 +8,7 @@ import { PostsModule } from './posts/posts.module';
 import { Post } from './posts/entities/post.entity';
 import { LogsModule } from './logs/logs.module';
 import { AppLoggerMiddleware } from './middleware/httplogging';
+import { Log } from './logs/entities/log.enity';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { AppLoggerMiddleware } from './middleware/httplogging';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [User, Post],
+      entities: [User, Post, Log],
     }),
     UsersModule,
     AuthModule,
